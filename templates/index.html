@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        #image-upload {
+            margin: 10px 0;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #output-image {
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+        #download-btn {
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Background Remover</h1>
+        <input type="file" id="image-upload" accept="image/*">
+        <button id="remove-bg-btn">Remove Background</button>
+        <div id="result">
+            <h2>Output Image:</h2>
+            <img id="output-image" alt="Your image will appear here">
+            <a id="download-btn" download="output_image.png">
+                <button>Download Image</button>
+            </a>
+        </div>
+    </div>
+    <script>
+        const uploadInput = document.getElementById('image-upload');
+        const removeBgButton = document.getElementById('remove-bg-btn');
+        const outputImage = document.getElementById('output-image');
+        const downloadButton = document.getElementById('download-btn');
+
+        removeBgButton.addEventListener('click', () => {
+            const file = uploadInput.files[0];
+            if (!file) {
+                alert('Please upload an image first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/remove-background', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    outputImage.src = url;
+                    outputImage.style.display = 'block';
+                    downloadButton.href = url;
+                    downloadButton.style.display = 'inline-block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing the image.');
+                });
+        });
+    </script>
+</body>
+</html>
