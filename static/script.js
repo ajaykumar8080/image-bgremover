@@ -23,9 +23,10 @@ document.getElementById("remove-bg-btn").onclick = async function() {
         outputImage.src = URL.createObjectURL(blob);
         outputImage.style.display = "block";
     } else {
-        alert("Failed to process image. Please try again.");
+        alert("Failed to process picture. Please try again.");
     }
 
     this.disabled = false;
     this.textContent = "Remove Background";
 };
+
